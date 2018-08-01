@@ -119,3 +119,17 @@ class SequenceLabelingEncoder(LabelEncoder, BaseEncoder):
         labels = super().inverse_transform(flat)
         return np.reshape(labels, shape)
 
+
+class IDEncoder(BaseEncoder):
+
+    def __init__(self):
+        self.classes_ = list(range(1))
+
+    def transform(self, x):
+        return x
+
+    def fit_transform(self, x):
+        return x
+
+    def inverse_transform(self, x):
+        return x

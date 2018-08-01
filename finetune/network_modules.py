@@ -149,10 +149,11 @@ def multi_choice_question(hidden, targets, n_targets, dropout_placeholder, confi
         hidden = dropout(hidden, config.clf_p_drop, train, dropout_placeholder)
 
         # some model
-        clf_out = perceptron(merge_leading_dims(hidden, 2), n_targets, config)
+        clf_out = perceptron(merge_leading_dims(hidden, 2), 1, config)
 
-        clf_logits = tf.reshape(clf_out, shape=initial_shape[0] + [n_targets])
-        clf_losses = tf.nn.softmax_cross_entropy_with_logits_v2(
+        clf_logits = tf.reshape(clf_out, shape=[-1, n_targets])
+
+        clf_losses = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=clf_logits,
             labels=tf.stop_gradient(targets)
         )
@@ -160,9 +161,6 @@ def multi_choice_question(hidden, targets, n_targets, dropout_placeholder, confi
             'logits': clf_logits,
             'losses': clf_losses
         }
-
-
-
 
 
 def regressor(hidden, targets, n_targets, dropout_placeholder, config, train=False, reuse=None, **kwargs):
